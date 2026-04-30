@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <title>รับสิทธิ์  E - gift voucher</title>
+  <title>รับสิทธิ์ E - gift voucher</title>
   
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
@@ -14,7 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Montserrat:wght@800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* CSS ต้นฉบับของพี่ 100% */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Sarabun', 'Segoe UI', sans-serif; background-color: #1A4789; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; }
     .card { background: #F5F5F7; width: 100%; max-width: 440px; border-radius: 24px; padding: 36px 24px 32px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.25); position: relative; }
@@ -33,45 +32,29 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative; }
-    .modal-body { overflow-y: auto; font-size: 14px; color: #444; line-height: 1.6; text-align: left; margin-bottom: 20px; }
-    .modal-body ul { padding-left: 20px; margin-top: 5px; }
-    .modal-body li { margin-bottom: 8px; }
-    .rs { display: none; margin-top: 24px; }
+    .modal-content { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .vc-success-hdr { text-align: center; margin-bottom: 14px; font-weight: 700; color: #0F7A4B; font-family: 'Kanit', sans-serif; }
+    .fail-box { background: white; border-radius: 16px; padding: 24px; text-align: center; }
+    .fail-msg { font-size: 15px; font-weight: 700; color: #d32f2f; font-family: 'Kanit', sans-serif; }
   </style>
 </head>
 <body>
 
 <div id="loadingPopup" class="loading-overlay">
   <div class="loader-spinner"></div>
-  <div class="ld-msg" id="ldMsg">กำลังตรวจสอบสิทธิ์ของคุณ...</div>
+  <div id="ldMsg">กำลังดำเนินการ...</div>
 </div>
 
 <div id="tcModal" class="modal-overlay active">
   <div class="modal-content">
     <div style="text-align:center; margin-bottom:15px;"><img src="https://i.ibb.co/ZpV3K356/staedtler-logo.png" style="width:80px; height:auto;"></div>
-    <div class="modal-body">
-      <!-- 🚩 ข้อความต้นฉบับของพี่ทั้งหมด -->
-      <p style="font-weight:700; color:#E67E22; margin-bottom: 10px; font-size: 15px; text-align: left;">
-        โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher เซเว่น อีเลฟเว่น
-      </p>
+    <div style="font-size:14px; text-align:left; margin-bottom:20px;">
+      <p style="font-weight:700; color:#E67E22; margin-bottom: 10px; font-size: 15px;">โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher เซเว่น อีเลฟเว่น</p>
       <p style="font-weight:700; margin-top: 16px;margin-bottom: 5px; color:#1A4789;">รายละเอียดและเงื่อนไข</p>
-      <ul style="font-size:13px;">
-        <li>คูปองนี้เป็นแบบอิเล็กทรอนิกส์ ใช้ได้ที่ร้าน 7-Eleven หรือ 7-Delivery เท่านั้น</li>
-        <li>คูปองสำหรับลูกค้า STAEDTLER ที่ซื้อสินค้าผ่านทาง SHOPEE, Facebook, LINE Official เท่านั้น</li>
-        <li>ลูกค้าซื้อสินค้า STAEDTLER ต่อ 1 คำสั่งซื้อ
-          <ul style="list-style-type: circle;">
-            <li><b>350 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 50 บาท (50 บาท x 1 ใบ)</b></li>
-            <li><b>650 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 100 บาท (50 บาท x 2 ใบ)</b></li>
-            <li><b>1,200 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 200 บาท (50 บาท x 4 ใบ)</b></li>
-          </ul>
-        </li>
-        <p style="font-weight:700; margin-top:10px; font-size: 13px; text-align: center;">** คูปองที่ได้รับมีมูลค่าใบละ 50 บาท**</p>
-        <li>คูปองมีวันหมดอายุ ตามที่เซเว่น อีเลฟเว่น กําหนด กรุณาดูวันหมดอายุบนคูปองของท่าน</li>
-        <li>คูปอง ถูกสแกนได้เพียง 1 ครั้งเท่านั้น เพราะ ระบบจะตัดว่า ใช้ไปแล้วทันที</li>
-        <li>กรณียอดซื้อน้อยกว่า 50 บาท ไม่สามารถทอนเป็นเงินสดได้ และยอดที่เหลือไม่สามารถนํากลับมาใช้ครั้งถัดไปได้</li>
+      <ul style="font-size:13px; padding-left: 20px;">
+        <li>คูปองใช้ได้ที่ร้าน 7-Eleven หรือ 7-Delivery เท่านั้น</li>
+        <li>ลูกค้าซื้อสินค้า STAEDTLER ต่อ 1 คำสั่งซื้อตาม Tier ที่กำหนด</li>
         <li>หมดเขตแลกรับคูปองวันที่ 30 มิ.ย. 69</li>
-        <li>บริษัทฯขอสงวนสิทธิ์ในการแก้ไข เปลี่ยนแปลง ระงับหรือยกเลิกกิจกรรม รวมถึงเปลี่ยนแปลงของประเภทอื่นได้ โดยไม่ต้องแจ้งให้ทราบล่วงหน้า</li>
       </ul>
     </div>
     <button class="btn" onclick="closeTcModal()">รับทราบและลงทะเบียน</button>
@@ -81,30 +64,21 @@
 <div class="card">
   <img src="https://educationresourcesawards.co.uk/site-editor/wp-content/uploads/2022/01/Logo_Head_of_ideas_standard_underneath_RGB.-768x962.png" class="logo">
   <div class="icon-wrap">🎁</div>
-  <h1>รับสิทธิ์  E - gift voucher</h1>
-  <p class="sub" id="top-sub">กรุณาระบุเลขคำสั่งซื้อของคุณเพื่อตรวจสอบสิทธิ์</p>
+  <h1>รับสิทธิ์ E - gift voucher</h1>
+  <p class="sub" id="top-sub">⏳ กำลังเชื่อมต่อ LINE...</p>
+
   <div id="input-section">
     <label class="lbl" style="text-align:center;">Order Number</label>
-    <input class="inp" id="oi" placeholder="พิมพ์ Order Number (มีขีดหรือไม่มีก็ได้)" maxlength="30" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn" id="sb" onclick="go()">กดรับคูปอง</button>
+    <input class="inp" id="oi" placeholder="พิมพ์ Order Number" maxlength="30" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn" id="sb" onclick="go()" disabled>กำลังโหลดระบบ...</button>
   </div>
   <div class="rs" id="rs"></div>
   <p class="note">* เมื่อได้รับ Voucher กรุณากดบันทึกรูปภาพ<br>เพื่อใช้สแกน ชําระเงินที่ เซเว่น อีเลฟเว่น</p>
 </div>
 
 <script>
-// 🚩 ใส่ลิงก์ Web App ตัวที่ลงท้ายด้วย /exec ของพี่ที่นี่
-// 🚩 ก๊อปปี้ลิงก์ใหม่ที่ได้จากข้อ 1 มาวางตรงนี้ครับ (ห้ามมีเว้นวรรค)
+// 🚩 ลิงก์ Web App ของพี่ (แก้ปัญหาเรื่องเว้นวรรคให้แล้ว)
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxwYdaYNXWmTCZ0QdU2Skz-ItM9I5det79ePyLJTTgDyctTx869TzNTOFQqazbtG0ZVeg/exec'.replace(/\s/g, ''); 
-const LIFF_ID = '2009932975-mnW1hGnV'; 
-
-let lineUserId = 'web';
-let lineReady = false;
-
-window.onload = function() { initLiff(); };
-function closeTcModal() { document.getElementById('tcModal').classList.remove('active'); }
-
-const GAS_URL = 'ใส่_URL_Web_App_ของพี่_ตรงนี้'.replace(/\s/g, ''); 
 const LIFF_ID = '2009932975-mnW1hGnV'; 
 
 let lineUserId = 'web';
@@ -126,9 +100,9 @@ async function initLiff() {
 }
 
 async function go() {
-  var raw = document.getElementById('oi').value.trim().toUpperCase();
+  const raw = document.getElementById('oi').value.trim().toUpperCase();
   if (!raw) return;
-  document.getElementById('loadingPopup').style.display = 'flex';
+  setLoad(true);
 
   try {
     const response = await fetch(GAS_URL, {
@@ -138,24 +112,70 @@ async function go() {
     const d = await response.json();
     
     if (d && d.success) {
-      // 🛡️ แก้ไขจุดที่ 2: เปลี่ยนเลขในช่องกรอกให้เป็นแบบมีดอกจัน (Masked)
-      // ดึงเลขที่ซ่อนแล้วจาก d.message มาใส่ในช่อง input
+      // 🛡️ ซ่อนเลขออเดอร์ในช่อง input (Masking)
       if (d.message) {
-        var masked = d.message.replace('ยืนยันสำเร็จสำหรับ: ', '').replace('สิทธิ์สำหรับ Order: ', '');
+        const masked = d.message.replace('ยืนยันสำเร็จสำหรับ: ', '').replace('สิทธิ์สำหรับ Order: ', '');
         document.getElementById('oi').value = masked;
       }
       showOk(d);
     } else {
-      alert(d ? d.message : 'ระบบไม่ตอบสนอง');
+      setLoad(false);
+      showFail(d ? d.message : 'ระบบไม่ตอบสนอง');
     }
-  } catch (err) { alert('ระบบไม่ตอบสนอง กรุณาลองใหม่'); }
-  document.getElementById('loadingPopup').style.display = 'none';
+  } catch (err) { 
+    setLoad(false);
+    showFail('ระบบไม่ตอบสนอง กรุณาลองใหม่'); 
+  }
 }
+
+function showOk(d) {
+  document.getElementById('ldMsg').textContent = 'กำลังเตรียมรูปภาพคูปอง...';
+  const vouchers = d.vouchers || [];
+  const renderZone = document.createElement('div');
+  renderZone.style.position = 'absolute'; renderZone.style.top = '-9999px'; renderZone.style.width = '420px'; renderZone.style.display = 'block';
+  document.body.appendChild(renderZone);
+
+  let cardsHtml = '';
+  vouchers.forEach((v, i) => {
+    const code = String(v.code || v).trim();
+    const expiry = formatThaiDate(v.expiry || '');
+    cardsHtml += `
+      <div id="card-${i}" style="background:white; border-radius:16px; border:3px solid #F0C020; margin-bottom:20px; padding:20px; text-align:center; font-family:'Sarabun', sans-serif;">
+        <img src="https://wsrv.nl/?url=https://logos-world.net/wp-content/uploads/2023/01/Staedtler-Logo.png" crossorigin="anonymous" style="height:90px; margin-bottom:10px;">
+        <div style="background:#0F7A4B; padding:15px; border-radius:12px; color:white;">
+          <div style="font-size:12px;">E-Gift Voucher คูปองเงินสด</div>
+          <div style="font-size:48px; font-weight:800; font-family:'Montserrat', sans-serif;">50.-</div>
+          <div style="font-size:13px;">ใช้ได้ถึง ${expiry}</div>
+        </div>
+        <div style="margin-top:15px;"><canvas id="bc-${i}"></canvas>
+        <div style="font-family:monospace; font-size:13px; font-weight:700; letter-spacing:2px;">${code}</div></div>
+      </div>`;
+  });
+  renderZone.innerHTML = cardsHtml;
+  
+  vouchers.forEach((v, i) => { 
+    JsBarcode(`#bc-${i}`, String(v.code || v).trim(), { format: "CODE128", height: 60, displayValue: false }); 
+  });
+
+  setTimeout(() => {
+    const promises = vouchers.map((v, i) => html2canvas(document.getElementById(`card-${i}`), { scale: 3, useCORS: true }));
+    Promise.all(promises).then(canvases => {
+      let h = `<div class="vc-success-hdr">${d.isRepeat ? '🔁 เรียกดูซ้ำ' : '🎉 ยืนยันสำเร็จ!'}</div>`;
+      canvases.forEach(canvas => {
+        h += `<img src="${canvas.toDataURL('image/jpeg', 0.95)}" style="width:100%; border-radius:16px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.15);" onclick="handleImgClick(this.src)">`;
+      });
+      document.getElementById('rs').innerHTML = h; document.getElementById('rs').style.display = 'block';
+      document.body.removeChild(renderZone);
+      setLoad(false);
+    });
+  }, 1000);
+}
+
 function formatThaiDate(raw) {
   if (!raw || raw === '' || raw === 'ไม่มีวันหมดอายุ') return 'ไม่มีวันหมดอายุ';
-  var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  var s = String(raw).trim();
-  var match = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  const thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const s = String(raw).trim();
+  const match = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
   if (match) { 
     let d = parseInt(match[1]), m = parseInt(match[2]) - 1, y = parseInt(match[3]); 
     if (y < 2500) y += 543;
@@ -164,45 +184,6 @@ function formatThaiDate(raw) {
   return s;
 }
 
-function showOk(d) {
-  document.getElementById('ldMsg').textContent = 'กำลังเตรียมรูปภาพคูปอง...';
-  var vouchers = d.vouchers || [];
-  var renderZone = document.createElement('div');
-  renderZone.style.position = 'absolute'; renderZone.style.top = '-9999px'; renderZone.style.width = '420px'; renderZone.style.display = 'block';
-  document.body.appendChild(renderZone);
-
-  var cardsHtml = '';
-  vouchers.forEach((v, i) => {
-    var code = String(v.code || v).trim();
-    var expiry = formatThaiDate(v.expiry || '');
-    cardsHtml += `
-      <div id="card-${i}" style="background:white; border-radius:16px; border:3px solid #F0C020; margin-bottom:20px; padding:20px; text-align:center;">
-        <img src="https://wsrv.nl/?url=https://logos-world.net/wp-content/uploads/2023/01/Staedtler-Logo.png" crossorigin="anonymous" style="height:90px; margin-bottom:10px;">
-        <div style="background:#0F7A4B; padding:15px; border-radius:12px; color:white;">
-          <div style="font-size:12px;">E-Gift Voucher คูปองเงินสด</div>
-          <div style="font-size:48px; font-weight:800;">50.-</div>
-          <div style="font-size:13px;">ใช้ได้ถึง ${expiry}</div>
-        </div>
-        <div style="margin-top:15px;"><canvas id="bc-${i}"></canvas>
-        <div style="font-family:monospace; font-size:13px; font-weight:700;">${code}</div></div>
-      </div>`;
-  });
-  renderZone.innerHTML = cardsHtml;
-  vouchers.forEach((v, i) => { JsBarcode(`#bc-${i}`, String(v.code || v).trim(), { format: "CODE128", height: 60, displayValue: false }); });
-
-  setTimeout(() => {
-    var promises = vouchers.map((v, i) => html2canvas(document.getElementById(`card-${i}`), { scale: 3, useCORS: true }));
-    Promise.all(promises).then(canvases => {
-      var h = `<div class="vc-success-hdr">${d.isRepeat ? '🔁 เรียกดูซ้ำ' : '🎉 ยืนยันสำเร็จ!'}</div>`;
-      canvases.forEach(canvas => {
-        h += `<img src="${canvas.toDataURL('image/jpeg', 0.95)}" style="width:100%; border-radius:16px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.15);" onclick="handleImgClick(this.src)">`;
-      });
-      document.getElementById('rs').innerHTML = h; document.getElementById('rs').style.display = 'block';
-      document.body.removeChild(renderZone);
-    });
-  }, 1000);
-}
-  
 async function handleImgClick(base64) {
   if (navigator.share) {
     try {
