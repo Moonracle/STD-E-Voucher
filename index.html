@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>รับสิทธิ์  E - gift voucher</title>
+  
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Montserrat:wght@800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ดีไซน์เดิมของพี่ทั้งหมด */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Sarabun', 'Segoe UI', sans-serif; background-color: #1A4789; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; }
+    .card { background: #F5F5F7; width: 100%; max-width: 440px; border-radius: 24px; padding: 36px 24px 32px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.25); position: relative; }
+    .logo { width: 140px; height: auto; margin: 0 auto 16px; display: block; object-fit: contain; }
+    .icon-wrap { width: 56px; height: 56px; background: #EEEEF6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
+    h1 { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; font-family: 'Kanit', sans-serif; }
+    .sub { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
+    .lbl { text-align: left; font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
+    .inp { width: 100%; padding: 16px 18px; background: white; border: none; border-radius: 14px; font-size: 16px; font-family: monospace; letter-spacing: 2px; text-align: center; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.06); color: #333; margin-bottom: 16px; -webkit-text-size-adjust: 100%; }
+    .inp::placeholder { color: #bbb; font-family: 'Sarabun', sans-serif; letter-spacing: 0; font-size: 14px; }
+    .btn { width: 100%; padding: 16px; background: #1A4789; color: white; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(26, 71, 137, 0.4); transition: opacity 0.2s, transform 0.1s; font-family: 'Kanit', sans-serif; min-height: 52px; }
+    .btn:active { transform: scale(0.98); opacity: 0.9; }
+    .btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+    .note { font-size: 12px; color: #999; margin-top: 24px; line-height: 1.7; }
+    .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: white; }
+    .loader-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #F0C020; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld-msg { font-size: 16px; color: #fff; margin-top: 8px; transition: opacity 0.4s; font-family: 'Kanit', sans-serif; text-align: center; }
+    .ld-msg-warn { font-size: 14px; color: #F0C020; margin-top: 6px; font-weight: 600; display: none; font-family: 'Kanit', sans-serif; text-align: center; }
+    .rs { display: none; margin-top: 24px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s; padding: 20px; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative; }
+    .fail-box { background: white; border-radius: 16px; padding: 24px; }
+    .fail-msg { font-size: 15px; font-weight: 700; color: #d32f2f; margin-bottom: 6px; font-family: 'Kanit', sans-serif; }
+    .fail-sub { font-size: 13px; color: #999; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+
+<div id="loadingPopup" class="loading-overlay">
+  <div class="loader-spinner"></div>
+  <div class="ld-msg" id="ldMsg">กำลังตรวจสอบสิทธิ์ของคุณ...</div>
+  <div class="ld-msg-warn" id="ldWarn">กำลังดำเนินการ กรุณาอย่าปิดหน้าต่างนี้</div>
+</div>
+
+<div id="tcModal" class="modal-overlay">
+  <div class="modal-content">
+    <div style="text-align:center; margin-bottom:15px;">
+      <img src="https://i.ibb.co/ZpV3K356/staedtler-logo.png" style="width:80px; height:auto;" alt="Logo">
+    </div>
+    <div class="modal-body">
+      <p style="font-weight:700; color:#E67E22; margin-bottom: 10px; font-size: 15px;">โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher</p>
+      <p style="font-weight:700; color:#1A4789;">รายละเอียดและเงื่อนไข</p>
+      <ul style="font-size:13px; text-align:left; padding-left:20px;">
+        <li>คูปองใช้ได้ที่ 7-Eleven หรือ 7-Delivery เท่านั้น</li>
+        <li>มูลค่า 50 บาท ต่อ 1 สิทธิ์ ตามยอดซื้อที่กำหนด[cite: 1]</li>
+        <li>หมดเขตแลกรับคูปอง 30 มิ.ย. 69[cite: 1]</li>
+      </ul>
+    </div>
+    <button class="btn" onclick="closeTcModal()">รับทราบและลงทะเบียน</button>
+  </div>
+</div>
+
+<div class="card">
+  <img src="https://educationresourcesawards.co.uk/site-editor/wp-content/uploads/2022/01/Logo_Head_of_ideas_standard_underneath_RGB.-768x962.png" class="logo">
+  <div class="icon-wrap" id="top-icon">🎁</div>
+  <h1>รับสิทธิ์  E - gift voucher</h1>
+  <p class="sub" id="top-sub">กรุณาระบุเลขคำสั่งซื้อของคุณเพื่อตรวจสอบสิทธิ์</p>
+
+  <div id="input-section">
+    <label class="lbl" style="text-align:center;">Order Number</label>
+    <input class="inp" id="oi" placeholder="พิมพ์ Order Number" maxlength="30" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn" id="sb" onclick="go()">กดรับคูปอง</button>
+  </div>
+  <div class="rs" id="rs"></div>
+  <p class="note">* เมื่อได้รับ Voucher กรุณากดบันทึกรูปภาพเพื่อใช้สแกนชำระเงิน[cite: 1]</p>
+</div>
+
+<script>
+// --- ส่วนที่ต้องตั้งค่าให้ตรงกับระบบของพี่ ---[cite: 1]
+const LIFF_ID = '2009932975-mnW1hGnV'; 
+const GAS_URL = 'ใส่_URL_WEB_APP_ของพี่_ที่ลงท้ายด้วย_EXEC_ตรงนี้ครับ'; 
+
+let lineUserId = 'web';
+let lineReady = false;
+
+window.onload = function() {
+  document.getElementById('tcModal').classList.add('active');
+  initLiff(); 
+};
+
+function closeTcModal() { document.getElementById('tcModal').classList.remove('active'); }
+
+async function initLiff() {
+  try {
+    const sub = document.getElementById('top-sub');
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) { liff.login(); return; }
+    const profile = await liff.getProfile();
+    lineUserId = profile.userId;
+    lineReady = true;
+    sub.textContent = '✅ เชื่อมต่อสำเร็จ (ID: ' + lineUserId.substring(0,8) + ')';
+    sub.style.color = '#0F7A4B';
+  } catch(e) { console.error(e); }
+}
+
+async function go() {
+  const raw = document.getElementById('oi').value.trim().toUpperCase();
+  if (!raw) { showFail('กรุณากรอก Order Number', ''); return; }
+  setLoad(true);
+
+  // 🛡️ เปลี่ยนมาใช้ fetch API เพื่อคุยกับ Google Sheets จากข้างนอก[cite: 1]
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ orderNumber: raw, lineId: lineUserId })
+    });
+    const d = await response.json();
+    if (d && d.success) { showOk(d); } 
+    else { setLoad(false); showFail(d ? d.message : 'เกิดข้อผิดพลาด', ''); }
+  } catch (err) {
+    setLoad(false);
+    showFail('ระบบไม่ตอบสนอง กรุณาลองใหม่', '');
+  }
+}
+
+function formatThaiDate(raw) {
+  if (!raw || raw === '' || raw === 'ไม่มีวันหมดอายุ') return 'ไม่มีวันหมดอายุ';[cite: 1]
+  var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];[cite: 1]
+  var d, m, y;
+  var s = String(raw).trim();
+  var match = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);[cite: 1]
+  if (match) { 
+    d = parseInt(match[1]); m = parseInt(match[2]) - 1; y = parseInt(match[3]); 
+    if (y < 2500) y += 543;
+    return d + ' ' + thaiMonths[m] + ' ' + y;
+  }
+  return s;
+}
+
+// 🎨 ฟังก์ชัน Render คูปอง (ดีไซน์ดั้งเดิมของพี่ทั้งหมด)[cite: 1]
+function showOk(d) {
+  document.getElementById('ldMsg').textContent = 'กำลังเตรียมรูปภาพคูปอง...';
+  var vouchers = d.vouchers || [];
+  var valuePerVoucher = 50;
+  var renderZone = document.createElement('div');
+  renderZone.id = 'render-zone';
+  renderZone.style.position = 'absolute'; renderZone.style.top = '-9999px'; renderZone.style.width = '420px'; renderZone.style.display = 'block';
+  document.body.appendChild(renderZone);
+
+  var cardsHtml = '';
+  vouchers.forEach((v, i) => {
+    var code = String(v.code || v).trim();
+    var expiryTxt = formatThaiDate(v.expiry || '');
+    var fmtCode = (code.length === 15) ? code.slice(0,3)+' '+code.slice(3,6)+' '+code.slice(6,9)+' '+code.slice(9,12)+' '+code.slice(12,15) : code;
+
+    cardsHtml += `
+      <div id="render-card-${i}" style="background:white; border-radius:16px; border:3px solid #F0C020; margin-bottom:20px; font-family:'Sarabun', sans-serif; display:block; position:relative; overflow:hidden;">
+        <div style="padding:16px 18px 0; background:white; height:90px; position:relative;">
+          <img src="https://wsrv.nl/?url=https://logos-world.net/wp-content/uploads/2023/01/Staedtler-Logo.png" crossorigin="anonymous" style="height: 90px; width: auto; position: absolute; top: -20px; left: 10px;">
+          <div style="position:absolute; bottom:0; right:-20px; width:55%; height:100%; transform:skewX(-8deg); display:flex; flex-direction:column; justify-content:flex-end; gap:3px; padding-bottom:10px;">
+            <div style="height:10px; background:#F47C20;"></div>
+            <div style="height:10px; background:#0F7A4B;"></div>
+            <div style="height:10px; background:#E53935;"></div>
+          </div>
+        </div>
+        <div style="background:#0F7A4B; padding:14px 18px; text-align:center;">
+          <div style="font-family:'Kanit',sans-serif; font-size:12px; color:white;">E-Gift Voucher คูปองเงินสด</div>
+          <div style="background:white; border-radius:10px; padding:6px 32px; display:inline-flex; align-items:center; margin:10px 0;">
+            <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:48px; color:#1A1A1A;">${valuePerVoucher}</div>
+            <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:#1A1A1A; align-self:flex-end; padding-bottom:5px;">.-</div>
+          </div>
+          <div style="font-family:'Kanit',sans-serif; font-size:13px; color:white;">ใช้ได้ถึง ${expiryTxt}</div>
+        </div>
+        <div style="background:white; padding:14px; text-align:center;">
+          <div style="font-family:'Kanit',sans-serif; font-size:12px; font-weight:700;">E-Gift Card มูลค่า ${valuePerVoucher} บาท</div>
+          <canvas id="render-bc-${i}" style="height:76px; margin:10px 0;"></canvas>
+          <div style="font-family:monospace; font-size:13px; font-weight:700; letter-spacing:1.5px;">${fmtCode}</div>
+          <p style="font-size:11px; color:#666; margin-top:10px;">แสดง Barcode ให้พนักงานสแกนเพื่อชำระเงิน[cite: 1]</p>
+        </div>
+      </div>`;
+  });
+  renderZone.innerHTML = cardsHtml;
+
+  vouchers.forEach((v, i) => {
+    JsBarcode(`#render-bc-${i}`, String(v.code || v).trim(), { format: "CODE128", width: 2, height: 72, displayValue: false });[cite: 1]
+  });
+
+  setTimeout(() => {
+    var promises = vouchers.map((v, i) => html2canvas(document.getElementById(`render-card-${i}`), { scale: 3, useCORS: true }));
+    Promise.all(promises).then(canvases => {
+      var h = `<div class="vc-success-hdr">${d.isRepeat ? '🔁 เรียกดูซ้ำ' : '🎉 ยืนยันสำเร็จ!'}</div>`;
+      canvases.forEach(canvas => {
+        h += `<img src="${canvas.toDataURL('image/jpeg', 0.95)}" style="width:100%; border-radius:16px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.15);" onclick="handleImgClick(this.src)">`;
+      });
+      document.getElementById('rs').innerHTML = h;
+      document.getElementById('rs').style.display = 'block';
+      document.body.removeChild(renderZone);
+      setLoad(false);
+    });
+  }, 1500);
+}
+
+async function handleImgClick(base64) {
+  const link = document.createElement('a');
+  link.href = base64; link.download = 'Voucher.jpg'; link.click();
+}
+
+function showFail(m, s) {
+  document.getElementById('rs').innerHTML = `<div class="fail-box"><div style="font-size:36px;">❌</div><div class="fail-msg">${m}</div></div>`;
+  document.getElementById('rs').style.display = 'block';
+}
+
+function setLoad(on) {
+  document.getElementById('loadingPopup').style.display = on ? 'flex' : 'none';
+  document.getElementById('sb').disabled = on;
+}
+</script>
+</body>
+</html>
