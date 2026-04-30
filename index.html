@@ -94,11 +94,12 @@
 
 <script>
 // 🚩 ใส่ลิงก์ Web App ตัวที่ลงท้ายด้วย /exec ของพี่ที่นี่
-const GAS_URL = 'ใส่_URL_WEB_APP_ของพี่_ตรงนี้'.replace(/\s/g, ''); 
-const LIFF_ID = '2009932975-mnW1hGnV';
+// 🚩 ก๊อปปี้ลิงก์ใหม่ที่ได้จากข้อ 1 มาวางตรงนี้ครับ (ห้ามมีเว้นวรรค)
+const GAS_URL = 'ใส่_URL_Web_App_ใหม่ที่นี่'.replace(/\s/g, ''); 
+const LIFF_ID = '2009932975-mnW1hGnV'; 
 
-var lineUserId = 'web';
-var lineReady = false;
+let lineUserId = 'web';
+let lineReady = false;
 
 window.onload = function() { initLiff(); };
 function closeTcModal() { document.getElementById('tcModal').classList.remove('active'); }
@@ -110,7 +111,7 @@ async function initLiff() {
     const profile = await liff.getProfile();
     lineUserId = profile.userId;
     lineReady = true;
-    document.getElementById('top-sub').textContent = '✅ เชื่อมต่อสำเร็จ (ID: ' + lineUserId.substring(0,8) + ')';
+    document.getElementById('top-sub').innerHTML = '✅ เชื่อมต่อสำเร็จ (ID: ' + lineUserId.substring(0,8) + ')';
     document.getElementById('top-sub').style.color = '#0F7A4B';
   } catch(e) { console.error(e); }
 }
@@ -121,14 +122,20 @@ async function go() {
   document.getElementById('loadingPopup').style.display = 'flex';
 
   try {
+    // 🛡️ ปรับการส่งข้อมูลให้ Google เข้าใจง่ายขึ้น เพื่อเลิกขึ้นว่า "ไม่ตอบสนอง"
     const response = await fetch(GAS_URL, {
       method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ orderNumber: raw, lineId: lineUserId })
     });
     const d = await response.json(); 
     if (d && d.success) { showOk(d); } 
     else { alert(d.message); }
-  } catch (err) { alert('ระบบไม่ตอบสนอง'); }
+  } catch (err) { 
+    // ถ้ายังขึ้นอันนี้ แสดงว่าลิงก์ GAS_URL ผิด หรือยังไม่ได้ตั้งค่าเป็น "Anyone"
+    alert('ระบบไม่ตอบสนอง: กรุณาเช็กการ Deploy ใน Google Sheet'); 
+  }
   document.getElementById('loadingPopup').style.display = 'none';
 }
 
