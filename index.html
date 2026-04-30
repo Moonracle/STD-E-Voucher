@@ -24,39 +24,54 @@
     .sub { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
     .lbl { text-align: left; font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
     .inp { width: 100%; padding: 16px 18px; background: white; border: none; border-radius: 14px; font-size: 16px; font-family: monospace; letter-spacing: 2px; text-align: center; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.06); color: #333; margin-bottom: 16px; }
-    .btn { width: 100%; padding: 16px; background: #1A4789; color: white; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(26, 71, 137, 0.4); font-family: 'Kanit', sans-serif; min-height: 52px; }
+    .btn { width: 100%; padding: 16px; background: #1A4789; color: white; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(26, 71, 137, 0.4); transition: opacity 0.2s, transform 0.1s; font-family: 'Kanit', sans-serif; min-height: 52px; }
     .btn:active { transform: scale(0.98); opacity: 0.9; }
-    .btn:disabled { background: #ccc; cursor: not-allowed; }
+    .btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
     .note { font-size: 12px; color: #999; margin-top: 24px; line-height: 1.7; }
     .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: white; }
     .loader-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #F0C020; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal-body { overflow-y: auto; font-size: 14px; color: #444; line-height: 1.6; text-align: left; margin-bottom: 20px; }
+    .modal-body ul { padding-left: 20px; margin-top: 5px; }
+    .modal-body li { margin-bottom: 8px; }
     .rs { display: none; margin-top: 24px; }
-    .fail-box { background: white; border-radius: 16px; padding: 24px; }
-    .fail-msg { font-size: 15px; font-weight: 700; color: #d32f2f; margin-bottom: 6px; font-family: 'Kanit', sans-serif; }
-    .vc-success-hdr { text-align: center; margin-bottom: 14px; }
-    .vc-ok-icon { font-size: 32px; margin-bottom: 6px; }
-    .vc-ok-title { font-size: 16px; font-weight: 700; color: #0F7A4B; font-family: 'Kanit', sans-serif; }
   </style>
 </head>
 <body>
 
 <div id="loadingPopup" class="loading-overlay">
   <div class="loader-spinner"></div>
-  <div id="ldMsg">กำลังตรวจสอบสิทธิ์...</div>
+  <div class="ld-msg" id="ldMsg">กำลังตรวจสอบสิทธิ์ของคุณ...</div>
 </div>
 
 <div id="tcModal" class="modal-overlay active">
   <div class="modal-content">
     <div style="text-align:center; margin-bottom:15px;"><img src="https://i.ibb.co/ZpV3K356/staedtler-logo.png" style="width:80px; height:auto;"></div>
-    <div style="font-size:14px; color:#444; line-height:1.6; text-align:left; margin-bottom:20px;">
-      <p style="font-weight:700; color:#E67E22; margin-bottom:10px;">โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher</p>
-      <ul>
-        <li>คูปองใช้ได้ที่ร้าน 7-Eleven หรือ 7-Delivery เท่านั้น</li>
+    <div class="modal-body">
+      <!-- 🚩 ข้อความต้นฉบับของพี่ทั้งหมด -->
+      <p style="font-weight:700; color:#E67E22; margin-bottom: 10px; font-size: 15px; text-align: left;">
+        โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher เซเว่น อีเลฟเว่น
+      </p>
+      <p style="font-weight:700; margin-top: 16px;margin-bottom: 5px; color:#1A4789;">รายละเอียดและเงื่อนไข</p>
+      <ul style="font-size:13px;">
+        <li>คูปองนี้เป็นแบบอิเล็กทรอนิกส์ ใช้ได้ที่ร้าน 7-Eleven หรือ 7-Delivery เท่านั้น</li>
+        <li>คูปองสำหรับลูกค้า STAEDTLER ที่ซื้อสินค้าผ่านทาง SHOPEE, Facebook, LINE Official เท่านั้น</li>
+        <li>ลูกค้าซื้อสินค้า STAEDTLER ต่อ 1 คำสั่งซื้อ
+          <ul style="list-style-type: circle;">
+            <li><b>350 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 50 บาท (50 บาท x 1 ใบ)</b></li>
+            <li><b>650 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 100 บาท (50 บาท x 2 ใบ)</b></li>
+            <li><b>1,200 บาทขึ้นไป</b> จะได้รับคูปอง <b> มูลค่า 200 บาท (50 บาท x 4 ใบ)</b></li>
+          </ul>
+        </li>
+        <p style="font-weight:700; margin-top:10px; font-size: 13px; text-align: center;">** คูปองที่ได้รับมีมูลค่าใบละ 50 บาท**</p>
+        <li>คูปองมีวันหมดอายุ ตามที่เซเว่น อีเลฟเว่น กําหนด กรุณาดูวันหมดอายุบนคูปองของท่าน</li>
+        <li>คูปอง ถูกสแกนได้เพียง 1 ครั้งเท่านั้น เพราะ ระบบจะตัดว่า ใช้ไปแล้วทันที</li>
+        <li>กรณียอดซื้อน้อยกว่า 50 บาท ไม่สามารถทอนเป็นเงินสดได้ และยอดที่เหลือไม่สามารถนํากลับมาใช้ครั้งถัดไปได้</li>
         <li>หมดเขตแลกรับคูปองวันที่ 30 มิ.ย. 69</li>
+        <li>บริษัทฯขอสงวนสิทธิ์ในการแก้ไข เปลี่ยนแปลง ระงับหรือยกเลิกกิจกรรม รวมถึงเปลี่ยนแปลงของประเภทอื่นได้ โดยไม่ต้องแจ้งให้ทราบล่วงหน้า</li>
       </ul>
     </div>
     <button class="btn" onclick="closeTcModal()">รับทราบและลงทะเบียน</button>
@@ -68,19 +83,18 @@
   <div class="icon-wrap">🎁</div>
   <h1>รับสิทธิ์  E - gift voucher</h1>
   <p class="sub" id="top-sub">กรุณาระบุเลขคำสั่งซื้อของคุณเพื่อตรวจสอบสิทธิ์</p>
-
   <div id="input-section">
     <label class="lbl" style="text-align:center;">Order Number</label>
-    <input class="inp" id="oi" placeholder="พิมพ์ Order Number" maxlength="30" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn" id="sb" onclick="go()" disabled>กำลังโหลดระบบ...</button>
+    <input class="inp" id="oi" placeholder="พิมพ์ Order Number (มีขีดหรือไม่มีก็ได้)" maxlength="30" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn" id="sb" onclick="go()">กดรับคูปอง</button>
   </div>
   <div class="rs" id="rs"></div>
-  <p class="note">* เมื่อได้รับ Voucher กรุณากดบันทึกรูปภาพ<br>เพื่อใช้สแกนชําระเงินที่ เซเว่น อีเลฟเว่น</p>
+  <p class="note">* เมื่อได้รับ Voucher กรุณากดบันทึกรูปภาพ<br>เพื่อใช้สแกน ชําระเงินที่ เซเว่น อีเลฟเว่น</p>
 </div>
 
 <script>
-// 🚩 ใส่ลิงก์ Web App (ที่ลงท้ายด้วย /exec) ของพี่ที่นี่ครับ
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwztnbDy8C2SDztQToF46jv0WwAfWNiGHJbZC5loPhvr6Y8sC99bWKWAQDMNC3NAZeQKg/exec'.replace(/\s/g, ''); 
+// 🚩 ใส่ลิงก์ Web App ตัวที่ลงท้ายด้วย /exec ของพี่ที่นี่
+const GAS_URL = 'ใส่_URL_WEB_APP_ของพี่_ตรงนี้'.replace(/\s/g, ''); 
 const LIFF_ID = '2009932975-mnW1hGnV';
 
 var lineUserId = 'web';
@@ -98,34 +112,24 @@ async function initLiff() {
     lineReady = true;
     document.getElementById('top-sub').textContent = '✅ เชื่อมต่อสำเร็จ (ID: ' + lineUserId.substring(0,8) + ')';
     document.getElementById('top-sub').style.color = '#0F7A4B';
-    document.getElementById('sb').disabled = false;
-    document.getElementById('sb').textContent = 'กดรับคูปอง';
   } catch(e) { console.error(e); }
 }
 
 async function go() {
   var raw = document.getElementById('oi').value.trim().toUpperCase();
   if (!raw) return;
-  setLoad(true);
+  document.getElementById('loadingPopup').style.display = 'flex';
 
-  // ส่งข้อมูลหา Google Sheets ผ่าน fetch (รับค่ากลับมาเป็นก้อน JSON)
   try {
     const response = await fetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({ orderNumber: raw, lineId: lineUserId })
     });
-    const d = await response.json(); // ข้อมูลจาก Code.gs ทั้งหมดจะมาอยู่ใน d
-    
-    if (d && d.success) { 
-      showOk(d); // ส่งก้อนข้อมูล d ไปให้ฟังก์ชัน Render คูปอง
-    } else { 
-      setLoad(false); 
-      showFail(d ? d.message : 'ไม่พบข้อมูล'); 
-    }
-  } catch (err) {
-    setLoad(false);
-    showFail('ระบบไม่ตอบสนอง กรุณาลองใหม่');
-  }
+    const d = await response.json(); 
+    if (d && d.success) { showOk(d); } 
+    else { alert(d.message); }
+  } catch (err) { alert('ระบบไม่ตอบสนอง'); }
+  document.getElementById('loadingPopup').style.display = 'none';
 }
 
 function formatThaiDate(raw) {
@@ -201,6 +205,8 @@ function showOk(d) {
       });
       document.getElementById('rs').innerHTML = h; document.getElementById('rs').style.display = 'block';
       document.body.removeChild(renderZone); setLoad(false);
+      document.getElementById('rs').innerHTML = '<div style="color:green; font-weight:700; margin-top:20px;">🎉 สำเร็จ! ' + d.message + '</div>';
+  document.getElementById('rs').style.display = 'block';
     });
   }, 1500);
 }
