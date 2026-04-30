@@ -1,219 +1,37 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <title>รับสิทธิ์ E - gift voucher</title>
-  
+  <title>Loading...</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Montserrat:wght@800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    /* CSS พื้นฐานคงเดิมตามดีไซน์พี่ครับ */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Sarabun', sans-serif; background-color: #1A4789; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; }
-    .card { background: #F5F5F7; width: 100%; max-width: 440px; border-radius: 24px; padding: 36px 24px 32px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.25); position: relative; }
-    .logo { width: 140px; height: auto; margin: 0 auto 16px; display: block; }
-    .icon-wrap { width: 56px; height: 56px; background: #EEEEF6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
-    h1 { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; font-family: 'Kanit', sans-serif; }
-    .inp { width: 100%; padding: 16px 18px; background: white; border: none; border-radius: 14px; font-size: 16px; font-family: monospace; letter-spacing: 2px; text-align: center; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.06); color: #333; margin-bottom: 16px; }
-    .btn { width: 100%; padding: 16px; background: #1A4789; color: white; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: 'Kanit', sans-serif; }
-    .btn:disabled { background: #ccc; cursor: not-allowed; }
-    .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: white; }
-    .loader-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #F0C020; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-    .modal-overlay.active { display: flex; }
-    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-    .rs { display: none; margin-top: 24px; }
-    /* สไตล์สำหรับหัวข้อคูปองเมื่อสำเร็จ */
-    .vc-success-hdr { text-align: center; font-family: 'Kanit', sans-serif; font-weight: 700; }
-  </style>
 </head>
 <body>
-
-<div id="loadingPopup" class="loading-overlay">
-  <div class="loader-spinner"></div>
-  <div class="ld-msg" id="ldMsg">กำลังดำเนินการ...</div>
-</div>
-
-<div id="tcModal" class="modal-overlay">
-  <div class="modal-content">
-    <div style="text-align:center; margin-bottom:15px;"><img src="https://i.ibb.co/ZpV3K356/staedtler-logo.png" style="width:80px; height:auto;"></div>
-    <div style="font-size:14px; color:#444; text-align:left; padding:0 10px; margin-bottom:20px;">
-      <p style="font-weight:700; color:#E67E22; margin-bottom:10px;">โปรแรง แจกจริง ลงทะเบียนเพื่อรับ E-gift voucher</p>
-      <ul style="padding-left:15px;">
-        <li>คูปองใช้ได้ที่ร้าน 7-Eleven หรือ 7-Delivery เท่านั้น</li>
-        <li>หมดเขตแลกรับคูปองวันที่ 30 มิ.ย. 69</li>
-      </ul>
-    </div>
-    <button class="btn" onclick="closeTcModal()">รับทราบและลงทะเบียน</button>
+  <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+    <p>กำลังเชื่อมต่อระบบรักษาความปลอดภัย...</p>
   </div>
-</div>
 
-<div class="card">
-  <img src="https://educationresourcesawards.co.uk/site-editor/wp-content/uploads/2022/01/Logo_Head_of_ideas_standard_underneath_RGB.-768x962.png" class="logo">
-  <div class="icon-wrap">🎁</div>
-  <h1>รับสิทธิ์ E - gift voucher</h1>
-  <p class="sub" id="top-sub">⏳ กำลังเชื่อมต่อ LINE...</p>
+  <script>
+    // 🚩 ใส่ลิงก์หน้าเว็บ Google Apps Script ตัวเดิมของพี่ที่นี่ครับ
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwztnbDy8C2SDztQToF46jv0WwAfWNiGHJbZC5loPhvr6Y8sC99bWKWAQDMNC3NAZeQKg/exec';
+    const LIFF_ID = '2009932975-mnW1hGnV';
 
-  <div id="input-section">
-    <label style="font-size:11px; font-weight:700; color:#555; display:block; margin-bottom:8px;">ORDER NUMBER</label>
-    <input class="inp" id="oi" placeholder="ระบุเลขคำสั่งซื้อ" maxlength="30" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn" id="sb" onclick="go()">กดรับคูปอง</button>
-  </div>
-  <div class="rs" id="rs"></div>
-  <p style="font-size:12px; color:#999; margin-top:24px;">* เมื่อได้รับ Voucher กรุณากดบันทึกรูปภาพเพื่อใช้สแกนชำระเงิน</p>
-</div>
-
-<script>
-var LIFF_ID = '2009932975-mnW1hGnV'; 
-var lineUserId = 'web';
-var lineReady = false;
-
-window.onload = function() {
-  document.getElementById('tcModal').classList.add('active');
-  initLiff(); 
-};
-
-function closeTcModal() { document.getElementById('tcModal').classList.remove('active'); }
-
-async function initLiff() {
-  try {
-    await liff.init({ liffId: LIFF_ID });
-    if (!liff.isLoggedIn()) { liff.login(); return; }
-    const profile = await liff.getProfile();
-    lineUserId = profile.userId;
-    lineReady = true;
-    document.getElementById('top-sub').innerHTML = '✅ เชื่อมต่อสำเร็จ (ID: ' + lineUserId.substring(0,8) + ')';
-    document.getElementById('top-sub').style.color = '#0F7A4B';
-  } catch(e) { console.error(e); }
-}
-
-async function go() {
-  const raw = document.getElementById('oi').value.trim().toUpperCase();
-  if (!raw) return;
-  setLoad(true);
-
-  try {
-    // 🚩 เปลี่ยน URL ตรงนี้ให้เป็นลิงก์ /exec ตัวล่าสุดที่พี่ Deploy แบบ Anyone มา
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwZ3Js87tyZ7vZStWXSoZDxHH1tlX9s8bO8GwWJ4U7_YzOYmkoJW_dgjDFAfdk-3ZaL5g/exec', {
-      method: 'POST',
-      body: JSON.stringify({ orderNumber: raw, lineId: lineUserId })
-    });
-    
-    const d = await response.json(); 
-    if (d.success) {
-      // เมื่อสำเร็จ ให้ซ่อนเลขออเดอร์ในช่องกรอก (Masking) ตามที่พี่ต้องการ
-      const masked = d.message.replace('ยืนยันสำเร็จสำหรับ: ', '').replace('สิทธิ์สำหรับ Order: ', '');
-      document.getElementById('oi').value = masked;
-      showOk(d); // แสดงรูปคูปอง
-    } else {
-      alert(d.message);
+    async function initLiff() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        } else {
+          const profile = await liff.getProfile();
+          // 🚀 วาร์ปกลับไปหาหน้าเว็บเดิมใน GAS พร้อม "แนบไอดีจริง" ไปใน URL
+          window.location.href = GAS_URL + "?uid=" + profile.userId;
+        }
+      } catch (e) {
+        console.error(e);
+        // ถ้าพัง ให้กลับไปหน้าเดิมแบบไม่มีไอดี (เป็น web)
+        window.location.href = GAS_URL;
+      }
     }
-  } catch (err) {
-    alert('ระบบไม่ตอบสนอง: เช็คสิทธิ์ Anyone ใน Google Sheet'); 
-  }
-  setLoad(false);
-}
-
-  
-function formatThaiDate(raw) {
-  if (!raw || raw === '' || raw === 'ไม่มีวันหมดอายุ') return 'ไม่มีวันหมดอายุ';
-  var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  var s = String(raw).trim();
-  var match = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
-  if (match) { 
-    let d = parseInt(match[1]), m = parseInt(match[2]) - 1, y = parseInt(match[3]); 
-    if (y < 2500) y += 543;
-    return d + ' ' + thaiMonths[m] + ' ' + y;
-  }
-  return s;
-}
-
-// 🎨 ฟังก์ชัน Render คูปอง (ปรับปรุงเพื่อความเสถียร 100%)
-function showOk(d) {
-  document.getElementById('ldMsg').textContent = 'กำลังเตรียมรูปภาพคูปอง...';
-  var vouchers = d.vouchers || [];
-  
-  // สร้าง renderZone แบบชั่วคราวและสะอาดที่สุด
-  var renderZone = document.createElement('div');
-  renderZone.id = 'render-zone';
-  renderZone.style.cssText = 'position:absolute; top:-9999px; left:-9999px; width:400px; display:block; background:#F5F5F7; padding:20px;';
-  document.body.appendChild(renderZone);
-
-  var cardsHtml = '';
-  vouchers.forEach((v, i) => {
-    var vobj = v;
-    var code = String(typeof vobj === 'object' ? vobj.code : vobj).trim();
-    var expiryTxt = formatThaiDate(typeof vobj === 'object' ? vobj.expiry : '');
-    
-    // ดีไซน์คูปองที่แก้ปัญหาเรื่อง skew และ flex เพี้ยน
-    cardsHtml += `
-      <div id="rcard-${i}" style="background:white; border-radius:16px; border:3px solid #F0C020; margin-bottom:20px; padding:20px; text-align:center; font-family:'Sarabun',sans-serif;">
-        <img src="https://wsrv.nl/?url=https://logos-world.net/wp-content/uploads/2023/01/Staedtler-Logo.png" crossorigin="anonymous" style="height:80px; width:auto; margin-bottom:10px; display:inline-block;">
-        <div style="background:#0F7A4B; padding:15px; border-radius:12px; color:white; margin-bottom:15px;">
-          <div style="font-size:12px; font-weight:600;">E-Gift Voucher คูปองเงินสด</div>
-          <div style="font-size:48px; font-weight:800; font-family:'Montserrat',sans-serif;">50.-</div>
-          <div style="font-size:13px; font-weight:600;">ใช้ได้ถึง ${expiryTxt}</div>
-        </div>
-        <div style="text-align:center;">
-          <canvas id="rbc-${i}" style="height:70px; margin:0 auto;"></canvas>
-          <div style="font-family:monospace; font-size:13px; font-weight:700; margin-top:5px; letter-spacing:1px;">${code}</div>
-        </div>
-      </div>`;
-  });
-  renderZone.innerHTML = cardsHtml;
-
-  // วาด Barcode ทันที
-  vouchers.forEach((v, i) => {
-    var code = String(typeof v === 'object' ? v.code : v).trim();
-    JsBarcode('#rbc-' + i, code, { format: 'CODE128', width: 2, height: 70, displayValue: false });
-  });
-
-  // รอให้ทรัพยากรโหลดเสร็จและ Render เป็นภาพ
-  setTimeout(function() {
-    var promises = vouchers.map((v, i) => html2canvas(document.getElementById('rcard-' + i), { scale: 3, useCORS: true, backgroundColor: '#ffffff' }));
-    
-    Promise.all(promises).then(canvases => {
-      var h = `<div class="vc-success-hdr">🎉 ยืนยันสำเร็จ!</div>`;
-      h += `<div style="text-align:center; color:#888; font-size:13px; margin-bottom:15px;">มูลค่ารวม ${d.totalValue} บาท (${vouchers.length} ใบ)</div>`;
-      
-      canvases.forEach((canvas, i) => {
-        var imgData = canvas.toDataURL('image/jpeg', 0.95);
-        h += `<img src="${imgData}" style="width:100%; border-radius:16px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.15);" onclick="handleImgClick(this.src)">`;
-        h += `<div style="background:#F0C020; color:#1A1A1A; padding:10px; border-radius:10px; font-size:13px; font-weight:700; text-align:center; margin-bottom:20px;">📸 แตะที่รูปเพื่อบันทึก</div>`;
-      });
-      
-      document.getElementById('rs').innerHTML = h;
-      document.getElementById('rs').style.display = 'block';
-      document.body.removeChild(renderZone);
-      setLoad(false);
-    }).catch(err => {
-      setLoad(false);
-      showFail('เกิดข้อผิดพลาดในการสร้างรูปภาพ', '');
-    });
-  }, 1200); // ลดเวลาลงเพื่อความรวดเร็วแต่ยังคงความเสถียร
-}
-
-async function handleImgClick(base64) {
-  const link = document.createElement('a'); link.href = base64; link.download = 'Voucher-' + Date.now() + '.jpg'; link.click();
-}
-
-function showFail(m, s) {
-  document.getElementById('rs').innerHTML = `<div class="fail-box"><div style="font-size:30px;">❌</div><div class="fail-msg">${m}</div></div>`;
-  document.getElementById('rs').style.display = 'block';
-}
-
-function setLoad(on) {
-  document.getElementById('loadingPopup').style.display = on ? 'flex' : 'none';
-  document.getElementById('sb').disabled = on;
-}
-</script>
+    window.onload = initLiff;
+  </script>
 </body>
 </html>
