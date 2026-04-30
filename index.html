@@ -11,75 +11,51 @@
     .container { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1A4789; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    #fallback-btn { display: none; margin-top: 20px; padding: 12px 24px; background-color: #06C755; color: white; border: none; border-radius: 10px; font-size: 16px; font-family: 'Kanit', sans-serif; cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3); }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="loader" id="loading-spinner"></div>
-    <p id="status-text" style="color: #333; font-weight: 600;">กำลังเชื่อมต่อระบบรักษาความปลอดภัย...</p>
-    
-    <!-- ปุ่มสำรอง โชว์ขึ้นมาเฉพาะตอนที่ระบบ Android บล็อกการเด้งอัตโนมัติ -->
-    <button id="fallback-btn" onclick="manualRedirect()">เข้าสู่หน้าลงทะเบียน</button>
+    <p id="status-text" style="color: #333; font-weight: 600;">กำลังตรวจสอบข้อมูล...</p>
   </div>
 
 <script>
   const LIFF_ID = '2009932975-mnW1hGnV';
-  let targetUrl = "";
 
   async function initLiff() {
     try {
       await liff.init({ liffId: LIFF_ID });
       
-      // 🛠️ แก้ปัญหา 1: บังคับบอกทางกลับบ้าน ป้องกัน Android วนลูป Login
       if (!liff.isLoggedIn()) {
-        const currentUrl = window.location.href.split('?')[0]; // ตัดค่า parameter ของ LINE ทิ้ง ป้องกันลูป
+        const currentUrl = window.location.href.split('?')[0]; 
         liff.login({ redirectUri: currentUrl });
         return;
       }
       
       const profile = await liff.getProfile();
-
-      // 🛠️ แก้ปัญหา 2: ใส่ ?t=... ป้องกัน Android จำค่า config เก่า (Cache)
       const response = await fetch('./config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // เตรียม URL ปลายทาง พร้อมแนบ UID
-        targetUrl = latestGasUrl + "?uid=" + profile.userId;
-        
+        const targetUrl = latestGasUrl + "?uid=" + profile.userId;
         document.getElementById('status-text').innerText = "กำลังเข้าสู่ระบบ...";
         
-        // 🛠️ แก้ปัญหา 3: ใช้ window.location.href แทน replace เพราะปลอดภัยกับมือถือมากกว่า
-        window.location.href = targetUrl; 
-
-        // 🛡️ แผนสำรอง: ถ้าผ่านไป 3 วินาทีแล้ว Android ยังดื้อไม่ยอมเด้งไป ให้โชว์ปุ่มกดเองเลย
-        setTimeout(() => {
-            document.getElementById('loading-spinner').style.display = "none";
-            document.getElementById('status-text').innerText = "กรุณากดปุ่มด้านล่างเพื่อดำเนินการต่อ";
-            document.getElementById('status-text').style.color = "#E67E22";
-            document.getElementById('fallback-btn').style.display = "block";
-        }, 3000);
+        // 🚀 ใช้คำสั่งวาร์ปขั้นสุดยอด ทะลุทะลวงทุกเบราว์เซอร์อัตโนมัติ ไม่ต้องรอกด
+        window.top.location.replace(targetUrl);
 
       } else {
         document.getElementById('status-text').innerText = "ไม่พบลิงก์ปลายทางในระบบ";
         document.getElementById('status-text').style.color = "#d32f2f";
+        document.getElementById('loading-spinner').style.display = "none";
       }
 
     } catch (e) {
       console.error("Redirect Error:", e);
       document.getElementById('status-text').innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
       document.getElementById('status-text').style.color = "#d32f2f";
+      document.getElementById('loading-spinner').style.display = "none";
     }
-  }
-  
-  // ฟังก์ชันสำหรับปุ่มกดเอง (แผนสำรอง)
-  function manualRedirect() {
-      if(targetUrl) {
-          document.getElementById('fallback-btn').innerText = "กำลังพาคุณไป...";
-          window.location.href = targetUrl;
-      }
   }
 
   window.onload = initLiff;
