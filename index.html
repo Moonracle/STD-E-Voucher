@@ -10,28 +10,36 @@
     <p>กำลังเชื่อมต่อระบบรักษาความปลอดภัย...</p>
   </div>
 
-  <script>
-    // 🚩 ใส่ลิงก์หน้าเว็บ Google Apps Script ตัวเดิมของพี่ที่นี่ครับ
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz53T8nBbcjgVRKwY90Mp61Wu99TZ5IkUir7ONQK4Zexf2ks25_iUK9hh7CRsgLEukSSA/exec';
-    const LIFF_ID = '2009932975-mnW1hGnV';
+<script>
+  const LIFF_ID = '2009932975-mnW1hGnV';
 
-    async function initLiff() {
-      try {
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-          liff.login();
-        } else {
-          const profile = await liff.getProfile();
-          // 🚀 วาร์ปกลับไปหาหน้าเว็บเดิมใน GAS พร้อม "แนบไอดีจริง" ไปใน URL
-          window.location.href = GAS_URL + "?uid=" + profile.userId;
-        }
-      } catch (e) {
-        console.error(e);
-        // ถ้าพัง ให้กลับไปหน้าเดิมแบบไม่มีไอดี (เป็น web)
-        window.location.href = GAS_URL;
+  async function initLiff() {
+    try {
+      // 1. ดึงไอดีจริงจาก LINE
+      await liff.init({ liffId: LIFF_ID });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
       }
+      const profile = await liff.getProfile();
+
+      // 2. 🚀 ดึง URL ล่าสุดจากไฟล์ config.json (เหมือนดึงตัวแปรกลาง)
+      const response = await fetch('./config.json');
+      const config = await response.json();
+      const latestGasUrl = config.gas_url;
+
+      // 3. วาร์ปไปที่ GAS พร้อมส่งไอดีจริงไปด้วย
+      if (latestGasUrl) {
+        window.location.replace(latestGasUrl + "?uid=" + profile.userId);
+      } else {
+        alert("ไม่พบลิงก์ปลายทางใน config.json");
+      }
+
+    } catch (e) {
+      console.error("Redirect Error:", e);
     }
-    window.onload = initLiff;
-  </script>
+  }
+  window.onload = initLiff;
+</script>
 </body>
 </html>
