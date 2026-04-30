@@ -96,38 +96,33 @@ async function initLiff() {
 }
 
 async function go() {
-  var raw = document.getElementById('oi').value.trim().toUpperCase();
+  const raw = document.getElementById('oi').value.trim().toUpperCase();
   if (!raw) return;
   setLoad(true);
 
-  // ดึง IP (ถ้าข้ามได้จะข้าม)
-  let userIp = "unknown";
   try {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    userIp = data.ip;
-  } catch (e) { }
-
-  // 🛡️ ส่งข้อมูลเข้า Google Apps Script
-  google.script.run
-    .withSuccessHandler(function(d) {
-      if (d && d.success) {
-        // ซ่อนเลขออเดอร์ในช่อง input ทันที
-        var masked = d.message.replace('ยืนยันสำเร็จสำหรับ: ', '').replace('สิทธิ์สำหรับ Order: ', '');
-        document.getElementById('oi').value = masked;
-        showOk(d);
-      } else {
-        setLoad(false);
-        showFail(d ? d.message : 'ไม่พบข้อมูล', '');
-      }
-    })
-    .withFailureHandler(function(err) {
-      setLoad(false);
-      showFail('เกิดข้อผิดพลาด กรุณาลองใหม่', '');
-    })
-    .verifyOrderNumber(raw, lineUserId, userIp);
+    // 🚩 เปลี่ยน URL ตรงนี้ให้เป็นลิงก์ /exec ตัวล่าสุดที่พี่ Deploy แบบ Anyone มา
+    const response = await fetch('ใส่_URL_WEB_APP_ตัวล่าสุด_ตรงนี้', {
+      method: 'POST',
+      body: JSON.stringify({ orderNumber: raw, lineId: lineUserId })
+    });
+    
+    const d = await response.json(); 
+    if (d.success) {
+      // เมื่อสำเร็จ ให้ซ่อนเลขออเดอร์ในช่องกรอก (Masking) ตามที่พี่ต้องการ
+      const masked = d.message.replace('ยืนยันสำเร็จสำหรับ: ', '').replace('สิทธิ์สำหรับ Order: ', '');
+      document.getElementById('oi').value = masked;
+      showOk(d); // แสดงรูปคูปอง
+    } else {
+      alert(d.message);
+    }
+  } catch (err) {
+    alert('ระบบไม่ตอบสนอง: เช็คสิทธิ์ Anyone ใน Google Sheet'); 
+  }
+  setLoad(false);
 }
 
+  
 function formatThaiDate(raw) {
   if (!raw || raw === '' || raw === 'ไม่มีวันหมดอายุ') return 'ไม่มีวันหมดอายุ';
   var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
