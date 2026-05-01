@@ -32,18 +32,20 @@
         return;
       }
       
-const profile = await liff.getProfile();
-      const response = await fetch('./config.json?t=' + new Date().getTime());
+      const profile = await liff.getProfile();
+      
+      // ดึงลิงก์จาก config.json (เอา ./ ออก ป้องกันแอนดรอยด์หา Path ไม่เจอ)
+      const response = await fetch('config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // 🚀 แนบทั้ง userId และ displayName (ใช้ encodeURIComponent เผื่อชื่อมีอีโมจิ)
+        // แนบทั้งไอดี และ ชื่อผู้ใช้ ส่งไปให้ GAS
         const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName);
-        document.getElementById('status-text').innerText = "กำลังเข้าสู่ระบบ...";
+        document.getElementById('status-text').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
         
-        window.top.location.replace(targetUrl);
-      }        // 🚀 ใช้คำสั่งวาร์ปขั้นสุดยอด ทะลุทะลวงทุกเบราว์เซอร์อัตโนมัติ ไม่ต้องรอกด
+        // 🚀 แก้บั๊กค้าง: ใช้คำสั่งวาร์ปมาตรฐาน แอนดรอยด์จะไม่บล็อกและวาร์ปให้อัตโนมัติทันที
+        window.location.href = targetUrl;
 
       } else {
         document.getElementById('status-text').innerText = "ไม่พบลิงก์ปลายทางในระบบ";
