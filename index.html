@@ -7,20 +7,40 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Kanit', sans-serif; background-color: #F5F5F7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .container { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
-    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1A4789; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+    body { font-family: 'Kanit', sans-serif; background-color: #1A4789; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); width: 90%; max-width: 400px; text-align: center; }
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #F0C020; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .logo { width: 140px; height: auto; margin: 0 auto 16px; display: block; object-fit: contain; }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <div class="card" id="loading-section">
     <div class="loader" id="loading-spinner"></div>
-    <p id="status-text" style="color: #333; font-weight: 600;">กำลังตรวจสอบข้อมูล...</p>
+    <p id="status-text" style="color: #333; font-weight: 600; font-size: 16px;">กำลังตรวจสอบข้อมูล...</p>
+  </div>
+
+  <div class="card" id="desktop-section" style="display: none;">
+    <img src="https://educationresourcesawards.co.uk/site-editor/wp-content/uploads/2022/01/Logo_Head_of_ideas_standard_underneath_RGB.-768x962.png" class="logo" alt="Logo">
+    <div style="width: 56px; height: 56px; background: #EEEEF6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px;">📱</div>
+    <h1 style="color:#1A4789; font-size:20px; margin-bottom: 10px;">กรุณาเปิดลิงก์ผ่าน LINE เท่านั้น</h1>
+    <p style="color:#666; font-size:14px; margin-bottom: 20px;">ระบบรองรับการใช้งานบนโทรศัพท์มือถือ<br>เพื่อความปลอดภัยในการยืนยันตัวตนครับ</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://moonracle.github.io/STD-E-Voucher/" style="border-radius:16px; margin: 0 auto; display:block; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
   </div>
 
 <script>
   const LIFF_ID = '2009932975-mnW1hGnV';
+
+  window.onload = function() {
+    var isDesktop = !(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    if (isDesktop) {
+      document.getElementById('loading-section').style.display = 'none';
+      document.getElementById('desktop-section').style.display = 'block';
+      return; 
+    }
+    initLiff();
+  };
 
   async function initLiff() {
     try {
@@ -33,20 +53,15 @@
       }
       
       const profile = await liff.getProfile();
-      
-      // ดึงลิงก์จาก config.json (เอา ./ ออก ป้องกันแอนดรอยด์หา Path ไม่เจอ)
       const response = await fetch('config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // แนบทั้งไอดี และ ชื่อผู้ใช้ ส่งไปให้ GAS
+        // 🚀 โค้ดบรรทัดนี้คือหัวใจสำคัญ ที่จะดึงชื่อส่งไปให้ Google Sheet ครับ!
         const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName);
         document.getElementById('status-text').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
-        
-        // 🚀 แก้บั๊กค้าง: ใช้คำสั่งวาร์ปมาตรฐาน แอนดรอยด์จะไม่บล็อกและวาร์ปให้อัตโนมัติทันที
         window.location.href = targetUrl;
-
       } else {
         document.getElementById('status-text').innerText = "ไม่พบลิงก์ปลายทางในระบบ";
         document.getElementById('status-text').style.color = "#d32f2f";
@@ -60,8 +75,6 @@
       document.getElementById('loading-spinner').style.display = "none";
     }
   }
-
-  window.onload = initLiff;
 </script>
 </body>
 </html>
