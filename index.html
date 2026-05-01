@@ -52,7 +52,8 @@
         return;
       }
       
-      const profile = await liff.getProfile();
+const profile = await liff.getProfile();
+const displayName = profile.displayName; // ชื่อคนกด
       const response = await fetch('config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
