@@ -32,17 +32,18 @@
         return;
       }
       
-      const profile = await liff.getProfile();
+const profile = await liff.getProfile();
       const response = await fetch('./config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        const targetUrl = latestGasUrl + "?uid=" + profile.userId;
+        // 🚀 แนบทั้ง userId และ displayName (ใช้ encodeURIComponent เผื่อชื่อมีอีโมจิ)
+        const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName);
         document.getElementById('status-text').innerText = "กำลังเข้าสู่ระบบ...";
         
-        // 🚀 ใช้คำสั่งวาร์ปขั้นสุดยอด ทะลุทะลวงทุกเบราว์เซอร์อัตโนมัติ ไม่ต้องรอกด
         window.top.location.replace(targetUrl);
+      }        // 🚀 ใช้คำสั่งวาร์ปขั้นสุดยอด ทะลุทะลวงทุกเบราว์เซอร์อัตโนมัติ ไม่ต้องรอกด
 
       } else {
         document.getElementById('status-text').innerText = "ไม่พบลิงก์ปลายทางในระบบ";
