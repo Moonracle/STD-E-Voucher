@@ -29,21 +29,26 @@
 <script>
   const LIFF_ID = '2009932975-mnW1hGnV';
 
+  // 🔍 สร้างตัวแปรจำสถานะแอดมินไว้ (เพื่อกัน LINE ทำลิงก์เพี้ยน)
+  let isAdminGlobal = false;
+
   window.onload = function() {
-    // 🔍 1. เช็คว่าเป็นหน้าแอดมินหรือเปล่าจาก URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAdminPage = urlParams.get('page') === 'admin';
+    // 💡 คาถาแก้บั๊ก LINE: สแกนหาคำว่า admin ทั้งใน URL ปกติและแบบที่ LINE ซ่อนไว้
+    const currentUrl = window.location.href;
+    if (currentUrl.includes('page=admin') || currentUrl.includes('page%3Dadmin')) {
+        isAdminGlobal = true;
+    }
 
     var isDesktop = !(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
     
-    // 🔒 2. ถ้าเป็นคอม "และ" ไม่ใช่หน้าแอดมิน ให้โชว์ QR Code ทันที
-    if (isDesktop && !isAdminPage) {
+    // 🔒 ถ้าเป็นคอม "และ" ไม่ใช่แอดมิน ให้บล็อกทันที
+    if (isDesktop && !isAdminGlobal) {
       document.getElementById('loading-section').style.display = 'none';
       document.getElementById('desktop-section').style.display = 'block';
       return; 
     }
     
-    // 📱 3. รันระบบต่อ (มือถือปกติ หรือ คอมที่เข้าหน้าแอดมิน)
+    // 📱 รันระบบต่อ
     initLiff();
   };
 
@@ -52,24 +57,20 @@
       await liff.init({ liffId: LIFF_ID });
       
       if (!liff.isLoggedIn()) {
-        // ใช้ window.location.href ตัวเต็ม เพื่อให้ ?page=admin ไม่หายไปตอนเด้งกลับมาจากหน้าล็อกอิน
         const currentUrl = window.location.href; 
         liff.login({ redirectUri: currentUrl });
         return;
       }
       
       const profile = await liff.getProfile();
-      const displayName = profile.displayName; // ชื่อคนกด
       const response = await fetch('config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // 🔍 ดึงพารามิเตอร์ page ว่าเข้าหน้าอะไรอยู่
-        const urlParams = new URLSearchParams(window.location.search);
-        const pageParam = urlParams.get('page') || 'user';
-
-        // 🚀 ส่งต่อข้อมูล uid, dname, และ page ไปยัง GAS 
+        // 🚀 ส่งไป Google Script โดยใช้ตัวแปรที่จำไว้
+        const pageParam = isAdminGlobal ? 'admin' : 'index';
+        
         const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName) + "&page=" + pageParam;
         
         document.getElementById('status-text').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
