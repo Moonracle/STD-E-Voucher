@@ -33,12 +33,20 @@
   const LIFF_ID = '2009932975-mnW1hGnV';
 
   window.onload = function() {
+    // 🔍 1. เช็คว่าเป็นหน้าแอดมินหรือเปล่าจาก URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdminPage = urlParams.get('page') === 'admin';
+
     var isDesktop = !(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-    if (isDesktop) {
+    
+    // 🔒 2. ถ้าเป็นคอม "และ" ไม่ใช่หน้าแอดมิน ให้โชว์ QR Code ทันที
+    if (isDesktop && !isAdminPage) {
       document.getElementById('loading-section').style.display = 'none';
       document.getElementById('desktop-section').style.display = 'block';
       return; 
     }
+    
+    // 📱 3. รันระบบต่อ (มือถือปกติ หรือ คอมที่เข้าหน้าแอดมิน)
     initLiff();
   };
 
@@ -47,20 +55,26 @@
       await liff.init({ liffId: LIFF_ID });
       
       if (!liff.isLoggedIn()) {
-        const currentUrl = window.location.href.split('?')[0]; 
+        // ใช้ window.location.href ตัวเต็ม เพื่อให้ ?page=admin ไม่หายไปตอนเด้งกลับมาจากหน้าล็อกอิน
+        const currentUrl = window.location.href; 
         liff.login({ redirectUri: currentUrl });
         return;
       }
       
-const profile = await liff.getProfile();
-const displayName = profile.displayName; // ชื่อคนกด
+      const profile = await liff.getProfile();
+      const displayName = profile.displayName; // ชื่อคนกด
       const response = await fetch('config.json?t=' + new Date().getTime());
       const config = await response.json();
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // 🚀 โค้ดบรรทัดนี้คือหัวใจสำคัญ ที่จะดึงชื่อส่งไปให้ Google Sheet ครับ!
-        const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName);
+        // 🔍 ดึงพารามิเตอร์ page ว่าเข้าหน้าอะไรอยู่
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageParam = urlParams.get('page') || 'user';
+
+        // 🚀 ส่งต่อข้อมูล uid, dname, และ page ไปยัง GAS 
+        const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName) + "&page=" + pageParam;
+        
         document.getElementById('status-text').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
         window.location.href = targetUrl;
       } else {
