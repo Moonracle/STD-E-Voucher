@@ -29,26 +29,35 @@
 <script>
   const LIFF_ID = '2009932975-mnW1hGnV';
 
-  // 🔍 สร้างตัวแปรจำสถานะแอดมินไว้ (เพื่อกัน LINE ทำลิงก์เพี้ยน)
-  let isAdminGlobal = false;
-
-  window.onload = function() {
-    // 💡 คาถาแก้บั๊ก LINE: สแกนหาคำว่า admin ทั้งใน URL ปกติและแบบที่ LINE ซ่อนไว้
+  window.onload = async function() {
     const currentUrl = window.location.href;
-    if (currentUrl.includes('page=admin') || currentUrl.includes('page%3Dadmin')) {
-        isAdminGlobal = true;
-    }
-
+    const isAdminPage = currentUrl.includes('page=admin') || currentUrl.includes('page%3Dadmin');
     var isDesktop = !(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
     
-    // 🔒 ถ้าเป็นคอม "และ" ไม่ใช่แอดมิน ให้บล็อกทันที
-    if (isDesktop && !isAdminGlobal) {
+    // 👑 1. ถ้าเป็นแอดมิน: ให้วิ่งไป Google Script แบบเพียวๆ เลย (ไม่เอา uid ไม่เอา LINE)
+    if (isAdminPage) {
+      document.getElementById('status-text').innerText = "กำลังเข้าสู่หน้า Admin...";
+      try {
+        const response = await fetch('config.json?t=' + new Date().getTime());
+        const config = await response.json();
+        if (config.gas_url) {
+          // ส่งไปแค่ ?page=admin ล้วนๆ
+          window.location.href = config.gas_url + "?page=admin";
+        }
+      } catch(e) {
+        document.getElementById('status-text').innerText = "ไม่พบลิงก์ระบบหลังบ้าน";
+      }
+      return; // สั่งจบการทำงานตรงนี้ ไม่ให้มันไหลไปรัน LIFF
+    }
+
+    // 🔒 2. ถ้าไม่ใช่แอดมิน แต่แอบเปิดบนคอม: บล็อกทันที
+    if (isDesktop) {
       document.getElementById('loading-section').style.display = 'none';
       document.getElementById('desktop-section').style.display = 'block';
       return; 
     }
     
-    // 📱 รันระบบต่อ
+    // 📱 3. ลูกค้าปกติบนมือถือ: ค่อยให้รัน LINE LIFF
     initLiff();
   };
 
@@ -68,24 +77,12 @@
       const latestGasUrl = config.gas_url;
 
       if (latestGasUrl) {
-        // 🚀 ส่งไป Google Script โดยใช้ตัวแปรที่จำไว้
-        const pageParam = isAdminGlobal ? 'admin' : 'index';
-        
-        const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName) + "&page=" + pageParam;
-        
+        const targetUrl = latestGasUrl + "?uid=" + profile.userId + "&dname=" + encodeURIComponent(profile.displayName);
         document.getElementById('status-text').innerText = "กำลังพาท่านเข้าสู่ระบบ...";
         window.location.href = targetUrl;
-      } else {
-        document.getElementById('status-text').innerText = "ไม่พบลิงก์ปลายทางในระบบ";
-        document.getElementById('status-text').style.color = "#d32f2f";
-        document.getElementById('loading-spinner').style.display = "none";
       }
-
     } catch (e) {
-      console.error("Redirect Error:", e);
       document.getElementById('status-text').innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
-      document.getElementById('status-text').style.color = "#d32f2f";
-      document.getElementById('loading-spinner').style.display = "none";
     }
   }
 </script>
